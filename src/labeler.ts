@@ -8,9 +8,9 @@ export function getLabels(
   const labels = new Set<string>();
 
   for (const [label, globs] of labelGlobs.entries()) {
-    core.debug(`processing ${label}`);
+    core.warning(`processing ${label}`);
     for (let glob of globs) {
-      core.debug(` checking pattern ${glob}`);
+      core.warning(` checking pattern ${glob}`);
 
       let requiredMatches = 1;
       if (glob.startsWith("all:")) {
@@ -23,9 +23,9 @@ export function getLabels(
 
       const matcher = new Minimatch(glob);
       for (const file of files) {
-        core.debug(` - ${file}`);
+        core.warning(` - ${file}`);
         if (matcher.match(file)) {
-          core.debug(` ${file} matches glob ${glob}`);
+          core.warning(` ${file} matches glob ${glob}`);
           matches++;
           if (matches === requiredMatches) {
             addedLabel = label;
@@ -35,7 +35,7 @@ export function getLabels(
         try {
           const regex = new RegExp(glob);
           if (file.match(regex)) {
-            core.debug(` ${file} matches regex ${regex}`);
+            core.warning(` ${file} matches regex ${regex}`);
             matches++;
             if (matches === requiredMatches) {
               addedLabel = file.replace(regex, label);
