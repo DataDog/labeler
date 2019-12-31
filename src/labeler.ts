@@ -38,7 +38,14 @@ export function getLabels(
           }
         } catch {}
       }
-      if (addedLabels.size == requiredMatches) {
+      if (requiredMatches == files.length) {
+        if (addedLabels.size == requiredMatches) {
+          for (const addedLabel of addedLabels) {
+            core.warning(`adding ${addedLabel}`);
+            labels.add(addedLabel);
+          }
+        }
+      } else {
         for (const addedLabel of addedLabels) {
           core.warning(`adding ${addedLabel}`);
           labels.add(addedLabel);
