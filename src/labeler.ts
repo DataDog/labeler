@@ -44,7 +44,7 @@ export function getLabels(
           }
         } catch {}
       }
-      if (addedLabels.size != requiredMatches) {
+      if (addedLabels.size == requiredMatches) {
         for (const addedLabel of addedLabels) {
           labels.add(addedLabel);
         }
