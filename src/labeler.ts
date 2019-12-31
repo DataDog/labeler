@@ -9,23 +9,43 @@ export function getLabels(
 
   for (const [label, globs] of labelGlobs.entries()) {
     core.debug(`processing ${label}`);
-    for (const glob of globs) {
+    for (let glob of globs) {
       core.debug(` checking pattern ${glob}`);
+
+      let requiredMatches = 1;
+      if (glob.startsWith("all:")) {
+        requiredMatches = files.length;
+        glob = glob.replace("all:", "");
+      }
+
+      let addedLabel = "";
+      let matches = 0;
+
       const matcher = new Minimatch(glob);
       for (const file of files) {
         core.debug(` - ${file}`);
         if (matcher.match(file)) {
           core.debug(` ${file} matches glob ${glob}`);
-          labels.add(label);
-          continue;
+          matches++;
+          if (matches === requiredMatches) {
+            addedLabel = label;
+            continue;
+          }
         }
         try {
           const regex = new RegExp(glob);
           if (file.match(regex)) {
             core.debug(` ${file} matches regex ${regex}`);
-            labels.add(file.replace(regex, label));
+            matches++;
+            if (matches === requiredMatches) {
+              addedLabel = file.replace(regex, label);
+              continue;
+            }
           }
         } catch {}
+      }
+      if (addedLabel != "") {
+        labels.add(addedLabel);
       }
     }
   }
