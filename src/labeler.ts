@@ -18,7 +18,7 @@ export function getLabels(
         glob = glob.replace("all:", "");
       }
 
-      let addedLabel = "";
+      let addedLabels = new Set<string>();
       let matches = 0;
 
       const matcher = new Minimatch(glob);
@@ -28,7 +28,7 @@ export function getLabels(
           core.warning(` ${file} matches glob ${glob}`);
           matches++;
           if (matches === requiredMatches) {
-            addedLabel = label;
+            addedLabels.add(label);
             continue;
           }
         }
@@ -38,14 +38,16 @@ export function getLabels(
             core.warning(` ${file} matches regex ${regex}`);
             matches++;
             if (matches === requiredMatches) {
-              addedLabel = file.replace(regex, label);
+              addedLabels.add(file.replace(regex, label));
               continue;
             }
           }
         } catch {}
       }
-      if (addedLabel != "") {
-        labels.add(addedLabel);
+      if (addedLabels.size != requiredMatches) {
+        for (const addedLabel of addedLabels) {
+          labels.add(addedLabel);
+        }
       }
     }
   }
