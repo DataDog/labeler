@@ -27,20 +27,16 @@ export function getLabels(
         if (matcher.match(file)) {
           core.warning(` ${file} matches glob ${glob}`);
           matches++;
-          if (matches === requiredMatches) {
-            addedLabels.add(label);
-            continue;
-          }
+          addedLabels.add(label);
+          continue;
         }
         try {
           const regex = new RegExp(glob);
           if (file.match(regex)) {
             core.warning(` ${file} matches regex ${regex}`);
             matches++;
-            if (matches === requiredMatches) {
-              addedLabels.add(file.replace(regex, label));
-              continue;
-            }
+            addedLabels.add(file.replace(regex, label));
+            continue;
           }
         } catch {}
       }
