@@ -19,11 +19,13 @@ export function getLabels(
         glob = glob.replace("all:", "");
       }
 
+      let matches = 0;
       const matcher = new Minimatch(glob);
       for (const file of files) {
         core.warning(` - ${file}`);
         if (matcher.match(file)) {
           core.warning(` ${file} matches glob ${glob}`);
+          matches++;
           addedLabels.add(label);
           continue;
         }
@@ -33,6 +35,7 @@ export function getLabels(
             core.warning(` ${file} matches regex ${regex}`);
             let r = file.replace(regex, label);
             core.warning(` ${file} replaced by ${r}`);
+            matches++;
             addedLabels.add(r);
             continue;
           }
@@ -40,7 +43,7 @@ export function getLabels(
       }
       if (requiredMatches === files.length) {
         core.warning(`allllllllll  L:${addedLabels.size} - R:${requiredMatches}`);
-        if (addedLabels.size === requiredMatches) {
+        if (matches === requiredMatches) {
           for (const addedLabel of addedLabels) {
             core.warning(`adding ${addedLabel}`);
             labels.add(addedLabel);
