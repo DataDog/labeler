@@ -38,9 +38,9 @@ export function getLabels(
           }
         } catch {}
       }
-      if (requiredMatches == files.length) {
+      if (requiredMatches === files.length) {
         core.warning(`allllllllll  L:${addedLabels.size} - R:${requiredMatches}`);
-        if (addedLabels.size == requiredMatches) {
+        if (addedLabels.size === requiredMatches) {
           for (const addedLabel of addedLabels) {
             core.warning(`adding ${addedLabel}`);
             labels.add(addedLabel);
