@@ -4,7 +4,6 @@ import * as yaml from "js-yaml";
 import * as labeler from "./labeler";
 
 async function run() {
-  core.error("!!!!");
   try {
     const token = core.getInput("repo-token", { required: true });
     const configPath = core.getInput("configuration-path", { required: true });

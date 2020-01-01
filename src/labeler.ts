@@ -8,10 +8,10 @@ export function getLabels(
   const labels = new Set<string>();
 
   for (const [label, globs] of labelGlobs.entries()) {
-    core.warning(`processing ${label}`);
+    core.debug(`processing ${label}`);
     let addedLabels = new Set<string>();
     for (let glob of globs) {
-      core.warning(` checking pattern ${glob}`);
+      core.debug(` checking pattern ${glob}`);
 
       let requiredMatches = 1;
       if (glob.startsWith("all:")) {
@@ -22,9 +22,9 @@ export function getLabels(
       let matches = 0;
       const matcher = new Minimatch(glob);
       for (const file of files) {
-        core.warning(` - ${file}`);
+        core.debug(` - ${file}`);
         if (matcher.match(file)) {
-          core.warning(` ${file} matches glob ${glob}`);
+          core.debug(` ${file} matches glob ${glob}`);
           matches++;
           addedLabels.add(label);
           continue;
@@ -32,9 +32,8 @@ export function getLabels(
         try {
           const regex = new RegExp(glob);
           if (file.match(regex)) {
-            core.warning(` ${file} matches regex ${regex}`);
             let r = file.replace(regex, label);
-            core.warning(` ${file} replaced by ${r}`);
+            core.debug(` ${file} replaced by ${r} for regex ${regex}`);
             matches++;
             addedLabels.add(r);
             continue;
@@ -42,16 +41,15 @@ export function getLabels(
         } catch {}
       }
       if (requiredMatches === files.length) {
-        core.warning(`allllllllll  L:${addedLabels.size} - R:${requiredMatches}`);
         if (matches === requiredMatches) {
           for (const addedLabel of addedLabels) {
-            core.warning(`adding ${addedLabel}`);
+            core.debug(`adding ${addedLabel}`);
             labels.add(addedLabel);
           }
         }
       } else {
         for (const addedLabel of addedLabels) {
-          core.warning(`adding ${addedLabel}`);
+          core.debug(`adding ${addedLabel}`);
           labels.add(addedLabel);
         }
       }
