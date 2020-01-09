@@ -31,11 +31,17 @@ export function getLabels(
         }
         try {
           const regex = new RegExp(glob);
-          if (file.match(regex)) {
-            let r = file.replace(regex, label);
-            core.debug(` ${file} replaced by ${r} for regex ${regex}`);
+          let patternMatches = file.match(regex);
+          if (patternMatches) {
+            if (patternMatches.length > 1) {
+              let r = file.replace(regex, label);
+              core.debug(` ${file} replaced by ${r} for regex ${regex}`);
+              addedLabels.add(r);
+            } else {
+              core.debug(` ${file} matches regex ${glob}`);
+              addedLabels.add(label);
+            }
             matches++;
-            addedLabels.add(r);
             continue;
           }
         } catch {}
